@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateRequest } from "./auth";
 
-/**
- * Middleware to ensure user is authenticated
- */
+// Middleware to ensure user is authenticated
 export async function requireAuth(
   request: NextRequest
 ): Promise<{ user: any; error?: NextResponse }> {
@@ -22,9 +20,9 @@ export async function requireAuth(
   return { user: authResult.user };
 }
 
-/**
- * Middleware to ensure user is admin
- */
+
+ // Middleware to ensure user is admin
+ 
 export async function requireAdmin(
   request: NextRequest
 ): Promise<{ user: any; error?: NextResponse }> {
@@ -47,9 +45,8 @@ export async function requireAdmin(
   return { user: authResult.user };
 }
 
-/**
- * Middleware to ensure user is student
- */
+// Middleware to ensure user is student
+
 export async function requireStudent(
   request: NextRequest
 ): Promise<{ user: any; error?: NextResponse }> {

@@ -24,11 +24,11 @@ export default function CustomTimetablePage() {
   const [saving, setSaving] = useState(false);
   const [clashWarning, setClashWarning] = useState<string | null>(null);
 
-  // ✅ Load all user data and exams
+  // Load all user data and exams
   useEffect(() => {
     const loadData = async () => {
       try {
-        // 1️⃣ Authenticate user
+        // Authenticate user
         const authRes = await apiClient.request('/auth/me');
         if (!authRes?.success || !authRes?.user?.id) {
           console.error('User not authenticated');
@@ -37,13 +37,13 @@ export default function CustomTimetablePage() {
         const userId = authRes.user.id.toString();
         setUserId(userId);
 
-        // 2️⃣ Fetch all exams
+        // Fetch all exams
         const examsRes = await apiClient.getAllExamsForStudent();
         if (examsRes.success && Array.isArray(examsRes.exams)) {
           setExams(examsRes.exams);
         }
 
-        // 3️⃣ Load student's saved classes from DB
+        // Load student's saved classes from DB
         const userClassesRes = await apiClient.getUserClasses();
         if (userClassesRes.success && Array.isArray(userClassesRes.classes)) {
           const userExamIds = userClassesRes.classes
@@ -64,7 +64,7 @@ export default function CustomTimetablePage() {
     loadData();
   }, []);
 
-  // ✅ Check for clashes before adding
+  // Check for clashes before adding
   const hasClash = (newExam: Exam, existing: Exam[]) => {
     return existing.some((exam) => {
       if (exam.date !== newExam.date) return false;
@@ -79,7 +79,7 @@ export default function CustomTimetablePage() {
     });
   };
 
-  // ✅ Add or remove exam (sync with backend)
+  // Add or remove exam (sync with backend)
   const toggleExam = async (exam: Exam) => {
     if (!userId) return;
     setSaving(true);
@@ -88,22 +88,22 @@ export default function CustomTimetablePage() {
       const isSelected = selectedExams.some((e) => e.id === exam.id);
 
       if (isSelected) {
-        // ❌ Remove exam from DB
+        // Remove exam from DB
         const res = await apiClient.removeUserClass(exam.id);
         if (res.success) {
           setSelectedExams(selectedExams.filter((e) => e.id !== exam.id));
         }
       } else {
-        // ⚠️ Check for time clash
+        // Check for time clash
         if (hasClash(exam, selectedExams)) {
           setClashWarning(
-            `⚠️ ${exam.title} overlaps with another scheduled exam.`
+            `${exam.title} overlaps with another scheduled exam.`
           );
           setTimeout(() => setClashWarning(null), 4000);
           return;
         }
 
-        // ✅ Add exam to DB
+        // Add exam to DB
         const res = await apiClient.addUserClass(exam.id, exam.classCode?.id);
         if (res.success) {
           setSelectedExams([...selectedExams, exam]);
@@ -116,7 +116,7 @@ export default function CustomTimetablePage() {
     }
   };
 
-  // ✅ Download timetable as text
+  // Download timetable as text
   const downloadTimetable = () => {
     const text = selectedExams
       .map(
@@ -142,7 +142,7 @@ export default function CustomTimetablePage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-semibold mb-6">📚 Custom Timetable Builder</h1>
+      <h1 className="text-3xl font-semibold mb-6">Custom Timetable Builder</h1>
 
       {clashWarning && (
         <div className="bg-yellow-200 text-yellow-800 p-3 rounded mb-4">
@@ -186,7 +186,7 @@ export default function CustomTimetablePage() {
             onClick={downloadTimetable}
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
           >
-            ⬇️ Download Timetable
+           Download Timetable
           </button>
         </div>
       )}

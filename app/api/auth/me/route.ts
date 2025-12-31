@@ -1,12 +1,9 @@
-// app/api/auth/me/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { initializeDatabase } from "@/backend/db-init";
 import { authenticateRequest } from "@/backend/middleware/auth";
 
-/**
- * GET /api/auth/me
- * Returns the currently authenticated user based on the session token.
- */
+// GET /api/auth/me
+//Returns the currently authenticated user based on the session token.
 export async function GET(request: NextRequest) {
   try {
     // Ensure database connection

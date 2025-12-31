@@ -19,16 +19,19 @@ interface ClassCodeAttributes {
 interface ClassCodeCreationAttributes extends Optional<ClassCodeAttributes, 'id'> {}
 
 // Define the ClassCode model
-class ClassCode extends Model<ClassCodeAttributes, ClassCodeCreationAttributes>
-  implements ClassCodeAttributes {
-  public id!: number;
-  public code!: string;
-  public exam_date?: Date | null;
-  public start_time?: string | null;
-  public end_time?: string | null;
-  public teacher_id?: number | null;
-  public room_id?: number | null;
+class ClassCode extends Model<
+  ClassCodeAttributes,
+  ClassCodeCreationAttributes
+> {
+  declare id: number;
+  declare code: string;
+  declare exam_date: Date | null;
+  declare start_time: string | null;
+  declare end_time: string | null;
+  declare teacher_id: number | null;
+  declare room_id: number | null;
 }
+
 
 // Initialize the model
 ClassCode.init(

@@ -2,9 +2,8 @@
 import { requireStudent } from "../middleware/roleGuard";
 import { getUserClasses, addUserClass, removeUserClass } from "../modules/student/userClassService";
 
-/**
- * Fetch all classes linked to the logged-in student
- */
+// Fetch all classes linked to the logged-in student
+
 export async function getClasses(request: any) {
   const { user, error } = await requireStudent(request);
   if (error) return error;
@@ -18,9 +17,7 @@ export async function getClasses(request: any) {
   }
 }
 
-/**
- * Add a class for the logged-in student
- */
+// Add a class for the logged-in student
 export async function createClass(request: any) {
   const { user, error } = await requireStudent(request);
   if (error) return error;
@@ -35,9 +32,7 @@ export async function createClass(request: any) {
   }
 }
 
-/**
- * Delete a class for the logged-in student
- */
+// Delete a class for the logged-in student
 export async function deleteClass(request: any) {
   const { user, error } = await requireStudent(request);
   if (error) return error;

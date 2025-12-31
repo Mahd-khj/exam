@@ -5,9 +5,8 @@ import User from "../../models/User";
 import { detectClashes } from "../../utils/clashDetection";
 import { initializeDatabase } from "../../db-init";
 
-/**
- * Get day name from date string
- */
+// Get day name from date string
+
 function getDayFromDate(dateStr: string): string {
   const date = new Date(dateStr);
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -16,22 +15,21 @@ function getDayFromDate(dateStr: string): string {
 
 export interface CreateExamData {
   title?: string;
-  day?: string; // Optional - will be calculated from date if not provided
+  day?: string;
   date: string;
   startTime: string;
   endTime: string;
   classCodeId?: number;
-  classCode?: string; // Alternative: provide class code string, will find or create
+  classCode?: string;
   roomId?: number;
-  roomName?: string; // Alternative: provide room name string, will find or create
+  roomName?: string;
   userId?: number;
 }
 
 export interface UpdateExamData extends Partial<CreateExamData> {}
 
-/**
- * Find or create a room by name
- */
+// Find or create a room by name
+
 async function findOrCreateRoom(roomName: string, capacity?: number): Promise<number> {
   await initializeDatabase();
   
@@ -55,9 +53,8 @@ async function findOrCreateRoom(roomName: string, capacity?: number): Promise<nu
   return room.id;
 }
 
-/**
- * Find or create a class code by code
- */
+// Find or create a class code by code
+
 async function findOrCreateClassCode(classCode: string): Promise<number> {
   await initializeDatabase();
   
@@ -80,9 +77,8 @@ async function findOrCreateClassCode(classCode: string): Promise<number> {
   return classCodeRecord.id;
 }
 
-/**
- * Create a new exam entry with clash detection
- */
+// Create a new exam entry with clash detection
+
 export async function createExam(data: CreateExamData) {
   // Ensure database is initialized
   await initializeDatabase();
@@ -93,24 +89,28 @@ export async function createExam(data: CreateExamData) {
   }
 
   // Resolve room ID (from roomId or roomName)
-  let roomId: number;
-  if (data.roomId) {
-    roomId = data.roomId;
-  } else if (data.roomName) {
-    roomId = await findOrCreateRoom(data.roomName);
-  } else {
-    throw new Error("Either roomId or roomName must be provided");
-  }
+let roomId: number;
+
+if (typeof data.roomId === "number") {
+  roomId = data.roomId;
+} else if (typeof data.roomName === "string" && data.roomName.trim().length > 0) {
+  roomId = await findOrCreateRoom(data.roomName.trim());
+} else {
+  throw new Error("Room name is required");
+}
+
 
   // Resolve class code ID (from classCodeId or classCode)
-  let classCodeId: number;
-  if (data.classCodeId) {
-    classCodeId = data.classCodeId;
-  } else if (data.classCode) {
-    classCodeId = await findOrCreateClassCode(data.classCode);
-  } else {
-    throw new Error("Either classCodeId or classCode must be provided");
-  }
+let classCodeId: number;
+
+if (typeof data.classCodeId === "number") {
+  classCodeId = data.classCodeId;
+} else if (typeof data.classCode === "string" && data.classCode.trim().length > 0) {
+  classCodeId = await findOrCreateClassCode(data.classCode.trim());
+} else {
+  throw new Error("Class code is required");
+}
+
 
   // Calculate day from date if not provided
   const day = data.day || getDayFromDate(data.date);
@@ -120,16 +120,47 @@ export async function createExam(data: CreateExamData) {
     date: data.date,
     startTime: data.startTime,
     endTime: data.endTime,
-    roomId: data.roomId,
-    classCodeId: data.classCodeId,
+    roomId: roomId,
+    classCodeId: classCodeId,
   });
 
   if (clashResult.hasClash) {
+    // Build a descriptive message for each clash
+    const details = clashResult.clashes.map((c: any) => {
+      const roomName = c.Room?.name || "Unknown Room";
+      const classCode = c.ClassCode?.code || "Unknown Class";
+      const start = c.startTime || "??:??";
+      const end = c.endTime || "??:??";
+      const date = c.date || "Unknown Date";
+
+      // Determine what kind of conflict
+      if (c.roomId === roomId && c.classCodeId === classCodeId) {
+        return `Room "${roomName}" and class "${classCode}" already have an exam on ${date} from ${start} to ${end}`;
+      } else if (c.roomId === roomId) {
+        return `Room "${roomName}" is already booked on ${date} from ${start} to ${end}`;
+      } else if (c.classCodeId === classCodeId) {
+        return `Class "${classCode}" already has another exam on ${date} from ${start} to ${end}`;
+      } else {
+        return `Exam conflict on ${date} from ${start} to ${end}`;
+      }
+    });
+
+    const combinedMessage =
+      "Exam scheduling conflict detected: " + details.join("; ");
+
     return {
       success: false,
+      message: combinedMessage,
       clashes: clashResult.clashes,
       exam: null,
     };
+  }
+
+
+    if (!roomId || !classCodeId) {
+    throw new Error(
+      `Resolved IDs invalid: roomId=${roomId}, classCodeId=${classCodeId}`
+    );
   }
 
   // Create exam
@@ -139,8 +170,8 @@ export async function createExam(data: CreateExamData) {
     date: data.date,
     startTime: data.startTime,
     endTime: data.endTime,
-    classCodeId: data.classCodeId,
-    roomId: data.roomId,
+    classCodeId: classCodeId,
+    roomId: roomId,
     userId: data.userId || null,
   });
 
@@ -166,9 +197,7 @@ export async function createExam(data: CreateExamData) {
   };
 }
 
-/**
- * Get all exams
- */
+// Get all exam
 export async function getAllExams(filters?: {
   search?: string;
   date?: string;
@@ -215,9 +244,7 @@ export async function getAllExams(filters?: {
   return exams;
 }
 
-/**
- * Get single exam by ID
- */
+// Get single exam by ID
 export async function getExamById(id: number) {
   const exam = await ExamTable.findByPk(id, {
     include: [
@@ -241,9 +268,7 @@ export async function getExamById(id: number) {
   return exam;
 }
 
-/**
- * Update exam entry with clash detection
- */
+// Update exam entry with clash detection
 export async function updateExam(id: number, data: UpdateExamData) {
   const existingExam = await ExamTable.findByPk(id);
   if (!existingExam) {
@@ -292,8 +317,30 @@ export async function updateExam(id: number, data: UpdateExamData) {
     });
 
     if (clashResult.hasClash) {
+      const details = clashResult.clashes.map((c: any) => {
+        const roomName = c.Room?.name || "Unknown Room";
+        const classCode = c.ClassCode?.code || "Unknown Class";
+        const start = c.startTime || "??:??";
+        const end = c.endTime || "??:??";
+        const date = c.date || "Unknown Date";
+
+        if (c.roomId === (data.roomId || existingExam.roomId) && c.classCodeId === (data.classCodeId || existingExam.classCodeId)) {
+          return `Room "${roomName}" and class "${classCode}" already have an exam on ${date} from ${start} to ${end}`;
+        } else if (c.roomId === (data.roomId || existingExam.roomId)) {
+          return `Room "${roomName}" is already booked on ${date} from ${start} to ${end}`;
+        } else if (c.classCodeId === (data.classCodeId || existingExam.classCodeId)) {
+          return `Class "${classCode}" already has another exam on ${date} from ${start} to ${end}`;
+        } else {
+          return `Exam conflict on ${date} from ${start} to ${end}`;
+        }
+      });
+
+      const combinedMessage =
+        "Exam scheduling conflict detected: " + details.join("; ");
+
       return {
         success: false,
+        message: combinedMessage,
         clashes: clashResult.clashes,
         exam: null,
       };
@@ -325,9 +372,7 @@ export async function updateExam(id: number, data: UpdateExamData) {
   };
 }
 
-/**
- * Delete exam entry
- */
+// Delete exam entry
 export async function deleteExam(id: number) {
   const exam = await ExamTable.findByPk(id);
   if (!exam) {
@@ -338,9 +383,8 @@ export async function deleteExam(id: number) {
   return { success: true };
 }
 
-/**
- * Delete all exam entries
- */
+//  Delete all exam entries
+
 export async function deleteAllExams() {
   await initializeDatabase();
   const deletedCount = await ExamTable.destroy({ where: {} });

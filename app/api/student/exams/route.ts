@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireStudent } from "@/backend/middleware/roleGuard";
 import { getAllExams } from "@/backend/modules/admin/examService";
 
-// GET - List all exams (read-only access for students)
+// List all exams (read-only access for students)
 export async function GET(request: NextRequest) {
   try {
     const authResult = await requireStudent(request);

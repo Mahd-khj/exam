@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireStudent } from "@/backend/middleware/roleGuard";
 import { getAllCourseCodes } from "@/backend/modules/student/timetableService";
 
-// GET - Get all available course codes
+// Get all available course codes
 export async function GET(request: NextRequest) {
   try {
     const authResult = await requireStudent(request);

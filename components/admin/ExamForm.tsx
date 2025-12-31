@@ -171,15 +171,20 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
 
       // Calculate day from date automatically (using YYYY-MM-DD format)
       const day = getDayFromDate(dateInYYYYMMDD);
-      
+
       // Backend will find or create room and class code automatically
       const result = await onSubmit({
-        ...formData,
-        date: dateInYYYYMMDD, // Send in YYYY-MM-DD format
-        day, // Add calculated day
-        classCode: formData.classCode.trim(), // Send class code string
-        roomName: formData.roomName.trim(), // Send room name string
+        title: formData.title,
+        date: dateInYYYYMMDD,
+        day,
+        startTime: formData.startTime,
+        endTime: formData.endTime,
+
+        classCode: formData.classCode.trim(),
+        roomName: formData.roomName.trim(),
       });
+
+
 
       if (!result.success && result.clashes) {
         setClashes(result.clashes);
@@ -187,7 +192,6 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
       } else if (!result.success) {
         setError('Failed to save exam');
       }
-      // Success is handled by parent component
     } catch (err: any) {
       setError(err.message || 'An error occurred');
     } finally {
@@ -212,7 +216,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
           </label>
           <AutocompleteInput
             value={formData.classCode}
-            onChange={(value) => setFormData({ ...formData, classCode: value })}
+            onChange={(value) => setFormData(prev => ({ ...prev, classCode: value }))}
             options={classCodes
               .filter((cc) => cc && cc.code)
               .map((cc) => ({
@@ -223,9 +227,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
             required
             isLoading={loadingOptions}
             onSelect={(option) => {
-              // Optionally auto-populate title if needed
-              // For now, just set the class code
-              setFormData({ ...formData, classCode: option.label });
+              setFormData(prev => ({ ...prev, classCode: option.label }))
             }}
           />
         </div>
@@ -237,7 +239,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
           <input
             type="text"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
             className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-black dark:text-gray-100 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400"
           />
         </div>
@@ -248,7 +250,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
           </label>
           <DatePicker
             value={formData.date}
-            onChange={(value) => setFormData({ ...formData, date: value })}
+            onChange={(value) => setFormData(prev => ({ ...prev, date: value }))}
             placeholder="DD/MM/YYYY"
             required
           />
@@ -260,7 +262,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
           </label>
           <AutocompleteInput
             value={formData.roomName}
-            onChange={(value) => setFormData({ ...formData, roomName: value })}
+            onChange={(value) => setFormData(prev => ({ ...prev, roomName: value }))}
             options={rooms
               .filter((room) => room && room.name)
               .map((room) => ({
@@ -271,8 +273,12 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
             placeholder="Enter or select room name"
             required
             isLoading={loadingOptions}
+            onSelect={(option) => {
+              setFormData(prev => ({ ...prev, roomName: option.label }))
+            }}
           />
         </div>
+
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -282,7 +288,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
             type="time"
             required
             value={formData.startTime}
-            onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+            onChange={(e) => setFormData(prev => ({ ...prev, startTime: e.target.value }))}
             className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-black dark:text-gray-100 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400"
           />
         </div>
@@ -295,7 +301,7 @@ export default function ExamForm({ exam, onSubmit, onCancel }: ExamFormProps) {
             type="time"
             required
             value={formData.endTime}
-            onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+            onChange={(e) => setFormData(prev => ({ ...prev, endTime: e.target.value }))}
             className="mt-1 block w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 text-black dark:text-gray-100 shadow-sm focus:border-blue-500 dark:focus:border-blue-400 focus:outline-none focus:ring-blue-500 dark:focus:ring-blue-400"
           />
         </div>

@@ -3,7 +3,7 @@ import { requireAdmin } from "@/backend/middleware/roleGuard";
 import ClassCode from "@/backend/models/ClassCode";
 import { initializeDatabase } from "@/backend/db-init";
 
-// GET - Get all class codes
+// Get all class codes
 export async function GET(request: NextRequest) {
   try {
     const authResult = await requireAdmin(request);

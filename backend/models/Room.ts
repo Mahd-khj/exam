@@ -1,10 +1,19 @@
-import { DataTypes, Model } from 'sequelize';
-import sequelize from '../db';
+import {
+  Model,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
+import sequelize from "../db";
 
-class Room extends Model {
-  public id!: number;
-  public name!: string;
-  public capacity!: number;
+class Room extends Model<
+  InferAttributes<Room>,
+  InferCreationAttributes<Room>
+> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare capacity: number;
 }
 
 Room.init(
@@ -25,8 +34,9 @@ Room.init(
     },
   },
   {
-    tableName: 'rooms',
     sequelize,
+    tableName: "rooms",
+    timestamps: false,
   }
 );
 

@@ -4,18 +4,15 @@ import {
   createExam,
   getAllExams,
   deleteAllExams,
+  updateExam,
 } from "@/backend/modules/admin/examService";
 
 // GET - List all exams (with optional filters)
 export async function GET(request: NextRequest) {
   try {
-    // Check admin authentication
     const authResult = await requireAdmin(request);
-    if (authResult.error) {
-      return authResult.error;
-    }
+    if (authResult.error) return authResult.error;
 
-    // Get query parameters
     const searchParams = request.nextUrl.searchParams;
     const search = searchParams.get("search") || undefined;
     const date = searchParams.get("date") || undefined;
@@ -24,7 +21,6 @@ export async function GET(request: NextRequest) {
       : undefined;
 
     const exams = await getAllExams({ search, date, roomId });
-
     return NextResponse.json({ success: true, exams });
   } catch (error: any) {
     console.error("Get exams error:", error);
@@ -35,14 +31,11 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - Create new exam
+//Create new exam
 export async function POST(request: NextRequest) {
   try {
-    // Check admin authentication
     const authResult = await requireAdmin(request);
-    if (authResult.error) {
-      return authResult.error;
-    }
+    if (authResult.error) return authResult.error;
 
     const body = await request.json();
     const result = await createExam(body);
@@ -57,12 +50,14 @@ export async function POST(request: NextRequest) {
         { status: 201 }
       );
     } else {
-      // Clash detected
+      //Return the detailed conflict message from examService
       return NextResponse.json(
         {
           success: false,
-          message: "Clash detected. Cannot create exam.",
-          clashes: result.clashes,
+          message:
+            result.message ||
+            "Clash detected. Please review the conflicts below.",
+          clashes: result.clashes || [],
         },
         { status: 409 }
       );
@@ -76,14 +71,57 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE - Delete all exams
+// Update existing exam
+export async function PATCH(request: NextRequest) {
+  try {
+    const authResult = await requireAdmin(request);
+    if (authResult.error) return authResult.error;
+
+    const body = await request.json();
+    const { id, ...updateData } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "Exam ID is required for update" },
+        { status: 400 }
+      );
+    }
+
+    const result = await updateExam(id, updateData);
+
+    if (result.success) {
+      return NextResponse.json({
+        success: true,
+        message: "Exam updated successfully",
+        exam: result.exam,
+      });
+    } else {
+      // Return detailed message from examService
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            result.message ||
+            "Clash detected. Please review the conflicts below.",
+          clashes: result.clashes || [],
+        },
+        { status: 409 }
+      );
+    }
+  } catch (error: any) {
+    console.error("Update exam error:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to update exam" },
+      { status: 500 }
+    );
+  }
+}
+
+// Delete all exams
 export async function DELETE(request: NextRequest) {
   try {
-    // Check admin authentication
     const authResult = await requireAdmin(request);
-    if (authResult.error) {
-      return authResult.error;
-    }
+    if (authResult.error) return authResult.error;
 
     const result = await deleteAllExams();
 

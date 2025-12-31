@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAuth } from "@/backend/middleware/roleGuard";
 import { logout } from "@/backend/modules/shared/authService";
 
-// POST - Logout user (invalidate session token)
+// Logout user (invalidate session token)
 export async function POST(request: NextRequest) {
   try {
     const authResult = await requireAuth(request);

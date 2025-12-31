@@ -1,4 +1,3 @@
-// backend/models/UserClass.ts
 import { DataTypes, Model } from "sequelize";
 import sequelize from "../db";
 import User from "./User";
@@ -25,7 +24,7 @@ UserClass.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: "users", // ✅ exact table name
+        model: "users",
         key: "id",
       },
       onDelete: "CASCADE",
@@ -35,7 +34,7 @@ UserClass.init(
       type: DataTypes.INTEGER,
       allowNull: true,
       references: {
-        model: "exam_tables", // ✅ exact DB table
+        model: "exam_tables",
         key: "id",
       },
       onDelete: "CASCADE",
@@ -59,7 +58,7 @@ UserClass.init(
   }
 );
 
-// ✅ Associations (with aliases)
+// Associations (with aliases)
 UserClass.belongsTo(User, { as: "User", foreignKey: "userId" });
 UserClass.belongsTo(ExamTable, { as: "ExamTable", foreignKey: "examId" });
 UserClass.belongsTo(ClassCode, { as: "ClassCode", foreignKey: "classCodeId" });

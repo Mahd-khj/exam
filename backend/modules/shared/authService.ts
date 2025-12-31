@@ -41,9 +41,8 @@ export interface SignupResult {
   error?: string;
 }
 
-/**
- * Signup new user (with email verification)
- */
+// Signup new user (with email verification)
+
 export async function signup(credentials: SignupCredentials): Promise<SignupResult> {
   try {
     await initializeDatabase();
@@ -93,9 +92,8 @@ export async function signup(credentials: SignupCredentials): Promise<SignupResu
   }
 }
 
-/**
- * Login user (only if verified)
- */
+// Login user (only if verified)
+
 export async function login(credentials: LoginCredentials): Promise<LoginResult> {
   try {
     await initializeDatabase();
@@ -133,9 +131,8 @@ export async function login(credentials: LoginCredentials): Promise<LoginResult>
   }
 }
 
-/**
- * Logout (invalidate token)
- */
+// Logout (invalidate token)
+
 export async function logout(token: string): Promise<{ success: boolean }> {
   try {
     await initializeDatabase();

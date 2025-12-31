@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/backend/middleware/roleGuard";
 import { parseCSV, parseExcel, uploadCSV } from "@/backend/modules/admin/csvService";
 
-// POST - Upload exams from CSV or Excel file
+// Upload exams from CSV or Excel file
 export async function POST(request: NextRequest) {
   try {
     const authResult = await requireAdmin(request);

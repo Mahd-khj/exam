@@ -256,9 +256,7 @@ function normalizeDate(dateStr: string): string {
   return '';
 }
 
-/**
- * Normalize time format (expects HH:MM or HH:MM:SS)
- */
+// Normalize time format (expects HH:MM or HH:MM:SS)
 function normalizeTime(timeStr: string): string {
   if (!timeStr || timeStr.trim() === '') {
     return '';
@@ -307,18 +305,16 @@ function normalizeTime(timeStr: string): string {
   return '';
 }
 
-/**
- * Get day name from date
- */
+// Get day name from date
+
 function getDayFromDate(dateStr: string): string {
   const date = new Date(dateStr);
   const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   return days[date.getDay()];
 }
 
-/**
- * Upload exams from CSV data
- */
+//  Upload exams from CSV data
+
 export async function uploadCSV(
   csvData: CSVRow[]
 ): Promise<CSVUploadResult> {

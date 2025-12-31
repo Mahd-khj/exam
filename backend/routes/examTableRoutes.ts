@@ -3,7 +3,7 @@ import { createExamEntry, getAllExamTables } from "../controllers/examTableContr
 
 const router = express.Router();
 
-router.post("/", createExamEntry);       // Add exam entry
-router.get("/", getAllExamTables);       // Get all exam tables
+router.post("/", createExamEntry);
+router.get("/", getAllExamTables);
 
 export default router;

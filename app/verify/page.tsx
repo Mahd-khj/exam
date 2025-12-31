@@ -64,7 +64,7 @@ export default function VerifyPage() {
 
       {status === "success" && (
         <>
-          <h1 style={{ color: "green" }}>✅ Email Verified!</h1>
+          <h1 style={{ color: "green" }}>Email Verified!</h1>
           <p>{message}</p>
           <a
             href="/login"
@@ -84,7 +84,7 @@ export default function VerifyPage() {
 
       {status === "error" && (
         <>
-          <h1 style={{ color: "red" }}>❌ Verification Failed</h1>
+          <h1 style={{ color: "red" }}>Verification Failed</h1>
           <p>{message}</p>
           <a
             href="/signup"

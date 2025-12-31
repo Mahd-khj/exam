@@ -20,7 +20,7 @@ export default function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [loadingExams, setLoadingExams] = useState(false);
 
-  // ✅ Load user, all exams, and user's saved classes (from DB only)
+  // Load user, all exams, and user's saved classes (from DB only)
   useEffect(() => {
     const loadDashboard = async () => {
       try {
@@ -58,7 +58,7 @@ export default function StudentDashboard() {
     loadDashboard();
   }, []);
 
-  // ✅ Add a class (DB only)
+  // Add a class (DB only)
   const handleAddClass = async (exam: Exam) => {
     if (selectedExamIds.includes(exam.id)) return;
 
@@ -73,7 +73,7 @@ export default function StudentDashboard() {
     }
   };
 
-  // ✅ Remove a class (DB only)
+  // Remove a class (DB only)
   const handleRemoveClass = async (examId: number) => {
     const updatedIds = selectedExamIds.filter((id) => id !== examId);
     setSelectedExamIds(updatedIds);
@@ -86,14 +86,14 @@ export default function StudentDashboard() {
     }
   };
 
-  // ✅ Reorder classes
+  // Reorder classes
   const handleExamsReorder = (exams: Exam[] | TimetableEntry[]) => {
     const newIds = exams.map((exam) => exam.id);
     setSelectedExamIds(newIds);
     setSelectedExams(exams as Exam[]);
   };
 
-  // ✅ Detect clashes between selected exams
+  // Detect clashes between selected exams
   const clashes = useMemo(() => {
     if (selectedExams.length < 2) return [];
 
@@ -133,7 +133,7 @@ export default function StudentDashboard() {
       </div>
     );
 
-  // ✅ Same design, DB-only behavior
+  // Same design, DB-only behavior
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

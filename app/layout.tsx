@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 
-// ✅ Stable, Turbopack-safe font imports
+// Stable, Turbopack-safe font imports
 const geistSans = Inter({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -23,13 +23,12 @@ export const metadata: Metadata = {
 import Layout from "@/components/shared/Layout";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
-/**
- * ✅ RootLayout
- * This wraps all pages in your global layout and theme provider.
- * - Uses stable Google fonts (Inter + Roboto Mono)
- * - Retains ThemeProvider and Layout
- * - Fully Turbopack compatible
- */
+// RootLayout
+// This wraps all pages in your global layout and theme provider.
+// Uses stable Google fonts (Inter + Roboto Mono)
+// Retains ThemeProvider and Layout
+// - Fully Turbopack compatible
+
 
 export default function RootLayout({
   children,

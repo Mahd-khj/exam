@@ -8,17 +8,26 @@ export default function NewExamPage() {
   const router = useRouter();
 
   const handleSubmit = async (data: any) => {
-    const response = await apiClient.createExam(data);
+    try {
+      const response = await apiClient.createExam(data);
 
-    if (response.success) {
-      router.push('/admin/exams');
-      return { success: true };
+      if (response.success) {
+        router.push('/admin/exams');
+        return { success: true };
+      }
+
+      return {
+        success: false,
+        message: response.message || 'Failed to save exam',
+        clashes: response.clashes || [],
+      };
+    } catch (error: any) {
+      console.error('Error creating exam:', error);
+      return {
+        success: false,
+        message: error.message || 'Unexpected error occurred',
+      };
     }
-
-    return {
-      success: false,
-      clashes: response.clashes,
-    };
   };
 
   return (

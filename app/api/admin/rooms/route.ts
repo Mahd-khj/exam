@@ -3,7 +3,7 @@ import { requireAdmin } from "@/backend/middleware/roleGuard";
 import Room from "@/backend/models/Room";
 import { initializeDatabase } from "@/backend/db-init";
 
-// GET - Get all rooms
+// Get all rooms
 export async function GET(request: NextRequest) {
   try {
     const authResult = await requireAdmin(request);

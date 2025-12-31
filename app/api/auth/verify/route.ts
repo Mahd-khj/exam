@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
 
     console.log(`User verified successfully with token: ${token}`);
 
-    // ✅ Redirect instead of sending JSON
+    // Redirect instead of sending JSON
     return NextResponse.redirect(
       new URL("/login?verified=true", req.url),
       { status: 302 }

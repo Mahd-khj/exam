@@ -16,9 +16,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-/**
- * Send email verification link through Gmail SMTP.
- */
+// Send email verification link through Gmail SMTP.
 export async function sendVerificationEmail(to: string, token: string) {
   const appUrl = process.env.APP_URL || "http://localhost:3000";
   const verifyUrl = `${appUrl}/api/auth/verify?token=${token}`;

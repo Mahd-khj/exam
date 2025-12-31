@@ -1,65 +1,76 @@
-// backend/models/ExamTable.ts
-import { DataTypes } from "sequelize";
+import {
+  Model,
+  DataTypes,
+  InferAttributes,
+  InferCreationAttributes,
+  CreationOptional,
+} from "sequelize";
 import sequelize from "../db";
 import User from "./User";
 import Room from "./Room";
 import ClassCode from "./ClassCode";
 
-// Define the ExamTable model
-const ExamTable = sequelize.define("ExamTable", {
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  day: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  date: {
-    type: DataTypes.DATEONLY,
-    allowNull: false,
-  },
-  startTime: {
-    type: DataTypes.TIME,
-    allowNull: false,
-  },
-  endTime: {
-    type: DataTypes.TIME,
-    allowNull: false,
-  },
-  userId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    references: {
-      model: "users",
-      key: "id",
+class ExamTable extends Model<
+  InferAttributes<ExamTable>,
+  InferCreationAttributes<ExamTable>
+> {
+  declare id: CreationOptional<number>;
+  declare title: string | null;
+  declare day: string;
+  declare date: string;
+  declare startTime: string;
+  declare endTime: string;
+  declare userId: number | null;
+  declare classCodeId: number;
+  declare roomId: number;
+}
+
+ExamTable.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    day: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date: {
+      type: DataTypes.DATEONLY,
+      allowNull: false,
+    },
+    startTime: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
+    endTime: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    classCodeId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    roomId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
-  classCodeId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: "class_codes",
-      key: "id",
-    },
-  },
-  roomId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: "rooms",
-      key: "id",
-    },
-  },
-}, {
-  tableName: "exam_tables",  // ✅ Explicitly define table name
-  timestamps: true,
-});
+  {
+    sequelize,
+    tableName: "exam_tables",
+    timestamps: true,
+  }
+);
 
 // Associations
 ExamTable.belongsTo(User, { foreignKey: "userId" });

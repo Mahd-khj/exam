@@ -10,6 +10,7 @@ export default function ExamsPage() {
   const router = useRouter();
   const [exams, setExams] = useState<Exam[]>([]);
   const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     loadExams();
@@ -23,6 +24,7 @@ export default function ExamsPage() {
       }
     } catch (error) {
       console.error('Failed to load exams:', error);
+      setErrorMessage('Failed to load exams.');
     } finally {
       setLoading(false);
     }
@@ -37,7 +39,8 @@ export default function ExamsPage() {
         throw new Error(response.error || 'Delete failed');
       }
     } catch (error: any) {
-      throw error;
+      console.error('Delete exam error:', error);
+      setErrorMessage(error.message || 'Failed to delete exam.');
     }
   };
 
@@ -50,13 +53,32 @@ export default function ExamsPage() {
         throw new Error(response.error || 'Delete all failed');
       }
     } catch (error: any) {
-      throw error;
+      console.error('Delete all exams error:', error);
+      setErrorMessage(error.message || 'Failed to delete all exams.');
     }
   };
 
+  useEffect(() => {
+    if (errorMessage) {
+      alert(errorMessage);
+      setErrorMessage(null);
+    }
+  }, [errorMessage]);
+
   if (loading) {
-    return <div className="text-center text-gray-500 dark:text-gray-400">Loading...</div>;
+    return (
+      <div className="text-center text-gray-500 dark:text-gray-400">
+        Loading...
+      </div>
+    );
   }
 
-  return <ExamList exams={exams} onDelete={handleDelete} onDeleteAll={handleDeleteAll} onRefresh={loadExams} />;
+  return (
+    <ExamList
+      exams={exams}
+      onDelete={handleDelete}
+      onDeleteAll={handleDeleteAll}
+      onRefresh={loadExams}
+    />
+  );
 }

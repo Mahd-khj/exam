@@ -1,11 +1,8 @@
-// backend/modules/student/userClassService.ts
 import UserClass from "../../models/UserClass";
 import ExamTable from "../../models/ExamTable";
 import ClassCode from "../../models/ClassCode";
 
-/**
- * Fetch all classes/exams linked to a specific student.
- */
+// Fetch all classes/exams linked to a specific student.
 export async function getUserClasses(userId: number) {
   try {
     const records = await UserClass.findAll({
@@ -25,9 +22,8 @@ export async function getUserClasses(userId: number) {
   }
 }
 
-/**
- * Add a class/exam record for a student.
- */
+// Add a class/exam record for a student.
+
 export async function addUserClass(
   userId: number,
   examId?: number,
@@ -50,7 +46,7 @@ export async function addUserClass(
     });
 
     if (existing) {
-      console.warn("⚠️ [addUserClass] Duplicate record for user:", userId);
+      console.warn("[addUserClass] Duplicate record for user:", userId);
       throw new Error("Class already added for this user.");
     }
 
@@ -60,24 +56,23 @@ export async function addUserClass(
       classCodeId: validClassCodeId,
     });
 
-    console.log("✅ [addUserClass] Created record:", newRecord.toJSON());
+    console.log("[addUserClass] Created record:", newRecord.toJSON());
     return { success: true, record: newRecord };
   } catch (err: any) {
-    console.error("❌ [addUserClass] Error:", err);
+    console.error("[addUserClass] Error:", err);
     throw new Error(err.message || "Failed to add user class");
   }
 }
 
-/**
- * Remove a class/exam record for a student.
- */
+// Remove a class/exam record for a student.
+
 export async function removeUserClass(
   userId: number,
   examId?: number,
   classCodeId?: number
 ) {
   try {
-    console.log("🗑️ [removeUserClass] Removing:", { userId, examId, classCodeId });
+    console.log("[removeUserClass] Removing:", { userId, examId, classCodeId });
 
     const deleted = await UserClass.destroy({
       where: {
@@ -91,10 +86,10 @@ export async function removeUserClass(
       throw new Error("No matching record found to delete.");
     }
 
-    console.log("✅ [removeUserClass] Record deleted for user", userId);
+    console.log("[removeUserClass] Record deleted for user", userId);
     return { success: true };
   } catch (err: any) {
-    console.error("❌ [removeUserClass] Error:", err);
+    console.error("[removeUserClass] Error:", err);
     throw new Error(err.message || "Failed to remove user class");
   }
 }

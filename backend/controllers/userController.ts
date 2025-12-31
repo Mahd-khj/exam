@@ -14,9 +14,7 @@ interface UserBody {
   teacher_id?: number;
 }
 
-// ==========================
 // CRUD ENDPOINTS
-// ==========================
 
 export const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -92,11 +90,10 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-// ==========================
-// PASSWORD RECOVERY LOGIC
-// ==========================
 
-// 1️⃣ Forgot Password
+// PASSWORD RECOVERY LOGIC
+
+// Forgot Password
 export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
   try {
@@ -131,7 +128,7 @@ export const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-// 2️⃣ Reset Password
+// Reset Password
 export const resetPassword = async (req: Request, res: Response) => {
   const { token, email, newPassword } = req.body;
   try {

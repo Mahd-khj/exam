@@ -17,32 +17,32 @@ export async function POST(req: NextRequest) {
 
     await initializeDatabase();
 
-    // ✅ Find user by token and email
+    // Find user by token and email
     const user = await User.findOne({ where: { email, resetPasswordToken: token } });
 
     if (!user) {
-      console.warn("❌ Invalid or missing reset token for:", email);
+      console.warn("Invalid or missing reset token for:", email);
       return NextResponse.json(
         { success: false, error: "Invalid or expired token." },
         { status: 400 }
       );
     }
 
-    // ✅ Check if token expired
+    // Check if token expired
     const now = new Date();
     const expiry = user.getDataValue("resetPasswordExpires");
     if (!expiry || now > new Date(expiry)) {
-      console.warn("❌ Expired token for:", email);
+      console.warn("Expired token for:", email);
       return NextResponse.json(
         { success: false, error: "Invalid or expired token." },
         { status: 400 }
       );
     }
 
-    // ✅ Hash new password
+    // Hash new password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Update user record
+    // Update user record
     user.set({
       password: hashedPassword,
       resetPasswordToken: null,
@@ -50,14 +50,14 @@ export async function POST(req: NextRequest) {
     });
     await user.save();
 
-    console.log(`🔐 Password reset successful for: ${email}`);
+    console.log(`Password reset successful for: ${email}`);
 
     return NextResponse.json({
       success: true,
       message: "Password has been reset successfully. You can now log in.",
     });
   } catch (error: any) {
-    console.error("❌ Reset Password Error:", error);
+    console.error("Reset Password Error:", error);
     return NextResponse.json(
       { success: false, error: "Internal server error" },
       { status: 500 }

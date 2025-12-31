@@ -4,9 +4,7 @@ import Room from "../../models/Room";
 import User from "../../models/User";
 import { initializeDatabase } from "../../db-init";
 
-/**
- * Get personalized exam timetable for a student based on their course codes
- */
+// Get personalized exam timetable for a student based on their course codes
 export async function getStudentTimetable(courseCodes: string[]) {
   // Ensure database is initialized
   await initializeDatabase();
@@ -60,9 +58,7 @@ export async function getStudentTimetable(courseCodes: string[]) {
   return exams;
 }
 
-/**
- * Get all available course codes (for student course selection)
- */
+// Get all available course codes (for student course selection)
 export async function getAllCourseCodes() {
   // Ensure database is initialized
   await initializeDatabase();

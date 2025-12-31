@@ -18,12 +18,11 @@ interface ExamData {
   endTime: string;
   roomId: number;
   classCodeId: number;
-  excludeExamId?: number; // For UPDATE operations
+  excludeExamId?: number;
 }
 
-/**
- * Check if two time ranges overlap
- */
+// Check if two time ranges overlap
+
 function timeOverlaps(
   start1: string,
   end1: string,
@@ -44,9 +43,8 @@ function timeOverlaps(
   return start1Minutes < end2Minutes && start2Minutes < end1Minutes;
 }
 
-/**
- * Detect clashes for a given exam entry
- */
+// Detect clashes for a given exam entry
+
 export async function detectClashes(examData: ExamData): Promise<ClashResult> {
   const clashes: ClashResult["clashes"] = [];
 
