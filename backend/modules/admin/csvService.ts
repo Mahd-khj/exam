@@ -19,12 +19,17 @@ export interface CSVRow {
 export interface CSVUploadResult {
   success: number;
   failed: number;
-  errors: Array<{ row: number; error: string; clashes?: any[] }>;
+  errors: Array<{
+    row: number;
+    error: string;
+    classCode?: string;
+    clashes?: any[];
+  }>;
 }
 
-/**
- * Parse CSV text into rows using XLSX library for better CSV handling
- */
+
+// Parse CSV text into rows using XLSX library for better CSV handling
+
 export function parseCSV(csvText: string): CSVRow[] {
   try {
     // Use XLSX library to parse CSV (handles quoted fields, commas in values, etc.)
@@ -91,9 +96,8 @@ export function parseCSV(csvText: string): CSVRow[] {
   }
 }
 
-/**
- * Parse Excel file (XLSX or XLS) into rows
- */
+// Parse Excel file (XLSX or XLS) into rows
+
 export function parseExcel(fileBuffer: Buffer): CSVRow[] {
   try {
     const workbook = XLSX.read(fileBuffer, { 
@@ -566,10 +570,12 @@ export async function uploadCSV(
         result.failed++;
         result.errors.push({
           row: i + 2,
-          error: "Clash detected",
+          error: `Clash detected for class "${courseCode}"`,
+          classCode: courseCode,
           clashes: createResult.clashes,
         });
       }
+
     } catch (error: any) {
       result.failed++;
       result.errors.push({
