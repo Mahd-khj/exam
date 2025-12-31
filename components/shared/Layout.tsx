@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { apiClient } from '@/lib/api';
@@ -72,7 +73,15 @@ export default function Layout({ children }: LayoutProps) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
             <div className="flex">
-              <div className="flex flex-shrink-0 items-center">
+              <div className="flex flex-shrink-0 items-center space-x-3">
+                <Image
+                  src="/air-logo.png"
+                  alt="App Logo"
+                  width={150}
+                  height={40}
+                  priority
+                />
+
                 <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                   Exam Schedule
                 </h1>
@@ -128,8 +137,15 @@ export default function Layout({ children }: LayoutProps) {
                 )}
               </div>
             </div>
+            
             <div className="hidden sm:ml-6 sm:flex sm:items-center sm:space-x-4">
-              <ThemeToggle />
+              <Image
+              src="/Ai and informatics.png"
+              alt="AI and Informatics"
+              width={150}
+              height={40}
+            />
+
               <span className="text-sm text-gray-700 dark:text-gray-300">
                 {user.name} ({user.role})
               </span>
